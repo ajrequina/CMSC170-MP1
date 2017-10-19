@@ -126,14 +126,19 @@ class Maze(object):
             return ret_val
 
         def create_path(current):
-            file = open("manhattanBasic.txt", "w")
+            file = open("../data/manhattanBasic.txt", "w")
             # path = []
+            cost = 1;
             while current.parent:
                 output[current.x][current.y] = '.'
                 current = current.parent
+                cost += 1
             output[current.x][current.y] = '.'
             for line in output:
                 file.write("".join(line) + "\n")
+            file.write("COST: " + str(cost) + "\n")
+            file.write("# of Expanded Nodes: " + str(len(close_list)) + "\n")
+            file.write("Size of Frontiers: " + str(frontier_size))
             file.close
 
         open_list = []
@@ -141,6 +146,7 @@ class Maze(object):
         start = maze[self.start.x][self.start.y]
         goal = maze[self.goals[0].x][self.goals[0].y]
         open_list.append(start)
+        frontier_size = 1
 
         while open_list:
             min_open = open_list.index(min(open_list, key=attrgetter('f')))
@@ -149,7 +155,9 @@ class Maze(object):
 
             for neighbor in neighbors:
                 if neighbor.s_type == 2:
-                    print(create_path(current))
+                    create_path(current)
+                    print("CHECK FOR manhattanBasic.txt")
+                    return
                 temp_g = current.g + get_distance(neighbor, current)
                 temp_h = get_distance(neighbor, goal)
                 temp_f = temp_g + temp_h
@@ -165,7 +173,9 @@ class Maze(object):
                     neighbor.h = temp_h
                     neighbor.f = temp_f
                     open_list.append(neighbor)
+                    frontier_size += 1
                 neighbor.parent = current
             close_list.append(current)
-maze = Maze(file_name="../data/bigMaze.lay.txt")
+
+maze = Maze(file_name="../data/smallMaze.lay.txt")
 maze.perform_manhattan_maze()
