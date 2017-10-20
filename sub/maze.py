@@ -128,7 +128,7 @@ class Maze(object):
         def create_path(current):
             file = open("../data/manhattanBasic.txt", "w")
             # path = []
-            cost = 1;
+            cost = 1
             while current.parent:
                 output[current.x][current.y] = '.'
                 current = current.parent
@@ -177,5 +177,5 @@ class Maze(object):
                 neighbor.parent = current
             close_list.append(current)
 
-maze = Maze(file_name="../data/smallMaze.lay.txt")
+maze = Maze(file_name="../data/trickySearch.lay.txt")
 maze.perform_manhattan_maze()
