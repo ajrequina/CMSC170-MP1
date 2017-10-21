@@ -17,6 +17,7 @@ class Maze(object):
         self.move_cost = 1
         self.frontier_size = 0
         self.generate()
+        self.goal_count = len(self.goals)
 
     def generate(self):
         if self.file_name:
@@ -113,7 +114,7 @@ class Maze(object):
             return min(heuristics)
 
     def create_path(self, current):
-        self.output[current.x][current.y] = "&"
+        self.output[current.x][current.y] = str(self.goal_count)
         current = current.parent
 
         while current.parent:
@@ -122,7 +123,8 @@ class Maze(object):
             self.path_cost += 1
             current = current.parent
 
-        self.output[current.x][current.y] = "&"
+        self.goal_count -= 1
+        self.output[current.x][current.y] = str(self.goal_count)
 
 
     def write_output(self):
@@ -149,7 +151,7 @@ class Maze(object):
                 open_list.remove(current)
             close_list.append(current)
 
-            if current in self.goals:
+            if current.s_type == 2 and current in self.goals:
                 self.create_path(current)
                 self.goals.remove(current)
                 open_list.append(current)
