@@ -1,0 +1,10 @@
+%%%%%%%
+%    0%
+% %%%*%
+%  %**%
+%%***%%
+%1*%%%%
+%%%%%%%
+COST: 8
+# of Expanded Nodes: 15
+Size of Frontiers: 16

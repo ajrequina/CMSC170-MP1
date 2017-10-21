@@ -14,5 +14,14 @@ class Main(object):
             'trickySearch.lay.txt'
         ]
 
-        self.mazes = []
-        
+        self.solve_mazes()
+
+    def solve_mazes(self):
+        for fname in self.files:
+            maze = Maze(file_name=fname, h_type="s")
+            maze.solve()
+
+            maze = Maze(file_name=fname, h_type="m")
+            maze.solve()
+
+main = Main()
