@@ -146,12 +146,7 @@ class Maze(object):
                 if not str(char).isdigit():
                     out_line += " " * space_count
                 else:
-                    if len(char) < space_count:
-                        if len(char) == 2:
-                            out_line += " "
-                        elif len(char) == 1:
-                            out_line += " "
-                    out_line += " "
+                    out_line += " " + (" " * (space_count - (len(char))))
 
             file.write(out_line + "\n")
 
