@@ -119,15 +119,18 @@ class Maze(object):
     def create_path(self, current):
         self.output[current.x][current.y] = str(self.goal_count)
         current = current.parent
-        while current.parent:
-            if self.output[current.x][current.y] == " ":
-                self.output[current.x][current.y] = '#'
+
+        while True:
             self.path_cost += 1
-            current = current.parent
-
+            if self.output[current.x][current.y] == " ":
+                self.output[current.x][current.y] = '.'
+            if current.parent:
+                current = current.parent
+            else:
+                break
+       
+        # self.output[current.x][current.y] = str(self.goal_count)
         self.goal_count += 1
-        self.output[current.x][current.y] = '0'
-
 
     def write_output(self):
         o_name = self.file_name + "-" + self.h_type + "_dist.txt"
@@ -175,11 +178,11 @@ class Maze(object):
                 self.create_path(current)
                 self.goals.remove(current)
                 open_list.append(current)
-
                 if len(self.goals):
-                    current.h = self.get_distance_multiple(current, self.goals)
+                    current.h = 0
                     current.g = 0
                     current.f = current.h + current.g
+                current.parent = None
                 continue
 
             neighbors = self.get_neighbors(current)
