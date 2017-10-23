@@ -15,6 +15,8 @@ class Square(object):
                part of the path
      parent = the parent square of this square
     '''
+    def __repr__(self):
+        return str((str(self.x), str(self.y))) + " h = " + str(self.h) 
     def __init__(self, x=0, y=0, s_type=0):
         self.x = x
         self.y = y

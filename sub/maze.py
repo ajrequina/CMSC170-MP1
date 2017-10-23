@@ -15,7 +15,7 @@ class Maze(object):
         self.goals = []
         self.path_cost = 1
         self.move_cost = 1
-        self.frontier_size = 0
+        self.frontier_size = 1
         self.generate()
         self.goal_count = 1
 
@@ -117,7 +117,6 @@ class Maze(object):
         self.output[current.x][current.y] = str(self.goal_count)
         current = current.parent
 
-        
         while True:
             self.path_cost += 1
             if self.output[current.x][current.y] == " ":
@@ -126,7 +125,7 @@ class Maze(object):
                 current = current.parent
             else:
                 break
-
+       
         # self.output[current.x][current.y] = str(self.goal_count)
         self.goal_count += 1
 
@@ -154,10 +153,14 @@ class Maze(object):
                 open_list.remove(current)
             close_list.append(current)
 
-            if current.s_type == 2 and current in self.goals:
+            if current in self.goals:
                 self.create_path(current)
                 self.goals.remove(current)
                 open_list.append(current)
+                if len(self.goals):
+                    current.h = 0
+                    current.g = 0
+                    current.f = current.h + current.g
                 current.parent = None
                 continue
 
