@@ -20,7 +20,11 @@ class Maze(object):
         self.generate()
         self.goal_count = 1
        
-
+    '''
+    Generates the maze from a file
+    Sets the start position
+    Sets the goals and contain it inside goals[]
+    '''
     def generate(self):
         if self.file_name:
             maze = open("mazes/" + self.file_name, "r")
@@ -50,111 +54,9 @@ class Maze(object):
 
                 self.maze.append(row)
 
-
-    def get_neighbors(self, current):
-        neighbors = []
-        maze = self.maze
-        max_width = len(maze[0])
-        max_height = len(maze)
-        temp_x = current.x
-        temp_y = current.y
-
-        # Top
-        if temp_x - 1 > 0 and abs(maze[temp_x - 1][temp_y].s_type) != 1:
-            neighbors.append(maze[temp_x - 1][temp_y])
-
-        # Down
-        if temp_x + 1 < max_height - 1 and abs(maze[temp_x + 1][temp_y].s_type) != 1:
-            neighbors.append(maze[temp_x + 1][temp_y])
-
-        # Left
-        if temp_y - 1 > 0 and abs(maze[temp_x][temp_y - 1].s_type) != 1:
-            neighbors.append(maze[temp_x][temp_y - 1])
-
-        # Right
-        if temp_y + 1 < max_width - 1 and abs(maze[temp_x][temp_y + 1].s_type) != 1:
-            neighbors.append(maze[temp_x][temp_y + 1])
-
-        return neighbors
-
-    def find_least(self, open_list=[]):
-        if open_list:
-            open_list = sorted(open_list, key=lambda x: x.f, reverse=False)
-            return open_list[0]
-        return None
-
-
-    def straight_distance(self, x1, y1, x2, y2):
-        dx = abs(x1 - x2)
-        dy = abs(y1 - y2)
-        return self.move_cost * max(dx, dy)
-
-
-    def manhattan_distance(self, x1, y1, x2, y2):
-        dx = abs(x1 - x2)
-        dy = abs(y1 - y2)
-        return dx + dy
-
-    def get_distance_single(self, start, goal):
-        if self.h_type == "s":
-            return self.straight_distance(
-                    x1=start.x, y1=start.y,
-                    x2=goal.x, y2=goal.y)
-
-        elif self.h_type == "m":
-            return self.manhattan_distance(
-                    x1=start.x, y1=start.y,
-                    x2=goal.x, y2=goal.y)
-
-    def get_distance_multiple(self, start, goals=[]):
-        if len(goals):
-            heuristics = []
-
-            for goal in goals:
-                h = self.get_distance_single(start, goal)
-                heuristics.append(h)
-
-            return min(heuristics)
-
-    def create_path(self, current):
-        self.output[current.x][current.y] = str(self.goal_count)
-        current = current.parent
-
-        while True:
-            self.path_cost += 1
-            if self.output[current.x][current.y] == " ":
-                self.output[current.x][current.y] = '.'
-            if current.parent:
-                current = current.parent
-            else:
-                break
-       
-        # self.output[current.x][current.y] = str(self.goal_count)
-        self.goal_count += 1
-
-    def write_output(self):
-        o_name = self.file_name + "-" + self.h_type + "_dist.txt"
-        file = open('mazes/solutions/' + o_name, "w")
-        space_count = len(str(self.goal_len))
-        space = ""
-        if space_count > 0:
-            space = " " * space_count
-        for line in self.output:
-            out_line = ""
-            for char in line:
-                out_line += char
-                if not str(char).isdigit():
-                    out_line += " " * space_count
-                else:
-                    out_line += " " + (" " * (space_count - (len(char))))
-
-            file.write(out_line + "\n")
-
-        file.write("COST: " + str(self.path_cost) + "\n")
-        file.write("# of Expanded Nodes: " + str(len(self.close_list)) + "\n")
-        file.write("Size of Frontiers: " + str(self.frontier_size))
-        file.close()
-
+    '''
+    Solves the given maze and put the solution inside output[]
+    '''
     def solve(self):
         open_list = self.open_list
         close_list = self.close_list
@@ -201,4 +103,134 @@ class Maze(object):
                 neighbor.parent = current
 
         self.write_output()
+
+    '''
+    Helper function for solve()
+    Return the neighbors(top, down, left, right) given a current square
+    '''
+    def get_neighbors(self, current):
+        neighbors = []
+        maze = self.maze
+        max_width = len(maze[0])
+        max_height = len(maze)
+        temp_x = current.x
+        temp_y = current.y
+
+        # Top
+        if temp_x - 1 > 0 and abs(maze[temp_x - 1][temp_y].s_type) != 1:
+            neighbors.append(maze[temp_x - 1][temp_y])
+
+        # Down
+        if temp_x + 1 < max_height - 1 and abs(maze[temp_x + 1][temp_y].s_type) != 1:
+            neighbors.append(maze[temp_x + 1][temp_y])
+
+        # Left
+        if temp_y - 1 > 0 and abs(maze[temp_x][temp_y - 1].s_type) != 1:
+            neighbors.append(maze[temp_x][temp_y - 1])
+
+        # Right
+        if temp_y + 1 < max_width - 1 and abs(maze[temp_x][temp_y + 1].s_type) != 1:
+            neighbors.append(maze[temp_x][temp_y + 1])
+
+        return neighbors
+
+    '''
+    Helper function for solve()
+    Returns the square with least f value given an open_list[]
+    '''
+    def find_least(self, open_list=[]):
+        if open_list:
+            open_list = sorted(open_list, key=lambda x: x.f, reverse=False)
+            return open_list[0]
+        return None
+
+
+    def get_distance_single(self, start, goal):
+        if self.h_type == "s":
+            return self.straight_distance(
+                    x1=start.x, y1=start.y,
+                    x2=goal.x, y2=goal.y)
+
+        elif self.h_type == "m":
+            return self.manhattan_distance(
+                    x1=start.x, y1=start.y,
+                    x2=goal.x, y2=goal.y)
+
+    def get_distance_multiple(self, start, goals=[]):
+        if len(goals):
+            heuristics = []
+
+            for goal in goals:
+                h = self.get_distance_single(start, goal)
+                heuristics.append(h)
+
+            return min(heuristics)
+
+    '''
+    Straight distance heuristics
+    '''
+    def straight_distance(self, x1, y1, x2, y2):
+        dx = abs(x1 - x2)
+        dy = abs(y1 - y2)
+        return self.move_cost * max(dx, dy)
+
+    '''
+    Manhattan distance heuristics
+    '''
+    def manhattan_distance(self, x1, y1, x2, y2):
+        dx = abs(x1 - x2)
+        dy = abs(y1 - y2)
+        return dx + dy
+
+    '''
+    Helper function for solve()
+    Creates a path given a current square by tracking its parents
+    Solves the path cost 
+    '''
+    def create_path(self, current):
+        self.output[current.x][current.y] = str(self.goal_count)
+        current = current.parent
+
+        while True:
+            self.path_cost += 1
+            if self.output[current.x][current.y] == " ":
+                self.output[current.x][current.y] = '.'
+            if current.parent:
+                current = current.parent
+            else:
+                break
+       
+        self.goal_count += 1
+
+    '''
+    Helper function for solve()
+    Writes the output[] into a file
+    Notes:
+     - "m_dist.txt" (through Manhattan Distance heuristics) 
+     - "s_dist.txt" (through Straight Distance heuristics)
+    '''
+    def write_output(self):
+        o_name = self.file_name + "-" + self.h_type + "_dist.txt"
+        file = open('mazes/solutions/' + o_name, "w")
+        space_count = len(str(self.goal_len))
+        space = ""
+        if space_count > 0:
+            space = " " * space_count
+        for line in self.output:
+            out_line = ""
+            for char in line:
+                out_line += char
+                if not str(char).isdigit():
+                    out_line += " " * space_count
+                else:
+                    out_line += " " + (" " * (space_count - (len(char))))
+
+            file.write(out_line + "\n")
+
+        file.write("COST: " + str(self.path_cost) + "\n")
+        file.write("# of Expanded Nodes: " + str(len(self.close_list)) + "\n")
+        file.write("Size of Frontiers: " + str(self.frontier_size))
+        file.close()
+
+    
 
