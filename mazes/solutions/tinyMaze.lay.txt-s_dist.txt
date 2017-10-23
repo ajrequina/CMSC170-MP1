@@ -7,4 +7,4 @@
 % % % % % % % 
 COST: 9
 # of Expanded Nodes: 14
-Size of Frontiers: 16
+Size of Frontiers: 3

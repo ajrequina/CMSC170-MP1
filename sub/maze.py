@@ -229,7 +229,7 @@ class Maze(object):
 
         file.write("COST: " + str(self.path_cost) + "\n")
         file.write("# of Expanded Nodes: " + str(len(self.close_list)) + "\n")
-        file.write("Size of Frontiers: " + str(self.frontier_size))
+        file.write("Size of Frontiers: " + str(len(self.open_list)))
         file.close()
 
     

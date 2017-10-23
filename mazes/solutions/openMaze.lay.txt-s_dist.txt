@@ -23,4 +23,4 @@
 % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
 COST: 55
 # of Expanded Nodes: 569
-Size of Frontiers: 582
+Size of Frontiers: 14
