@@ -17,7 +17,7 @@ class Maze(object):
         self.move_cost = 1
         self.frontier_size = 0
         self.generate()
-        self.goal_count = len(self.goals)
+        self.goal_count = 1
 
     def generate(self):
         if self.file_name:
@@ -123,8 +123,8 @@ class Maze(object):
             self.path_cost += 1
             current = current.parent
 
-        self.goal_count -= 1
-        self.output[current.x][current.y] = str(self.goal_count)
+        self.goal_count += 1
+        self.output[current.x][current.y] = '0'
 
 
     def write_output(self):
