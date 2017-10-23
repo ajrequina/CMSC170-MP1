@@ -16,8 +16,10 @@ class Maze(object):
         self.path_cost = 1
         self.move_cost = 1
         self.frontier_size = 1
+        self.goal_len = 0
         self.generate()
         self.goal_count = 1
+       
 
     def generate(self):
         if self.file_name:
@@ -40,6 +42,7 @@ class Maze(object):
                         self.start = square
                     elif char == ".":
                         square = Square(x=x, y=y, s_type=2)
+                        self.goal_len += 1
                         self.goals.append(square)
                     y += 1
                     row.append(square)
@@ -129,8 +132,26 @@ class Maze(object):
     def write_output(self):
         o_name = self.file_name + "-" + self.h_type + "_dist.txt"
         file = open('mazes/solutions/' + o_name, "w")
+        space_count = len(str(self.goal_len))
+        space = ""
+        if space_count > 0:
+            space = " " * space_count
         for line in self.output:
-            file.write("".join(line) + "\n")
+            out_line = ""
+            for char in line:
+                out_line += char
+                if not str(char).isdigit():
+                    out_line += " " * space_count
+                else:
+                    if len(char) < space_count:
+                        if len(char) == 2:
+                            out_line += " "
+                        elif len(char) == 1:
+                            out_line += " "
+                    out_line += " "
+
+            file.write(out_line + "\n")
+
         file.write("COST: " + str(self.path_cost) + "\n")
         file.write("# of Expanded Nodes: " + str(len(self.close_list)) + "\n")
         file.write("Size of Frontiers: " + str(self.frontier_size))
